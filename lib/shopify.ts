@@ -183,6 +183,8 @@ export async function getFeaturedContent() {
   };
 }
 
+
+
 export async function getCollections(limit = 12) {
   const data = await shopifyFetch<{
     collections: { edges: Array<{ node: CollectionCard }> };
@@ -473,3 +475,5 @@ export async function cartLinesRemove(cartId: string, lineIds: string[]) {
 
   return data.cartLinesRemove.cart;
 }
+
+
