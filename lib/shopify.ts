@@ -164,7 +164,7 @@ export async function getFeaturedContent() {
             }
           }
         }
-        products(first: 8, sortKey: BEST_SELLING, query: "tag:featured") {
+        products(first: 8, sortKey: CREATED_AT, reverse: true) {
           edges {
             node {
               ...ProductCard
