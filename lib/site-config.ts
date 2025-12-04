@@ -4,7 +4,6 @@ export const siteConfig = {
     'A curated mix of rare editions, fine press ephemera, and museum-grade antiques for collectors.',
   navigation: [
     { label: 'Collections', href: '/collections' },
-    { label: 'Search', href: '/search' },
     { label: 'About', href: '/about' }
   ],
   metadataBase: new URL('https://atelier-scriptorium.example')

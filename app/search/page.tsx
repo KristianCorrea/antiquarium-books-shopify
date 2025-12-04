@@ -13,20 +13,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8">
       <header className="space-y-4 text-center">
-        <p className="text-xs uppercase tracking-[0.5em] text-black/50">Search</p>
-        <h1 className="font-display text-5xl text-ink">Find a volume</h1>
-        <form className="mx-auto flex max-w-2xl items-center gap-2" role="search">
-          <input
-            type="search"
-            name="q"
-            defaultValue={query}
-            placeholder="Search title, author, era, collection..."
-            className="w-full rounded-full border border-black/10 bg-white/80 px-5 py-3 text-sm focus:border-ink focus:outline-none"
-          />
-          <button className="rounded-full bg-ink px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-white">
-            Search
-          </button>
-        </form>
       </header>
       {query && !results?.nodes.length && <p className="text-center text-black/60">No items match "{query}".</p>}
       {results?.nodes.length ? (

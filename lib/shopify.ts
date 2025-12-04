@@ -476,4 +476,6 @@ export async function cartLinesRemove(cartId: string, lineIds: string[]) {
   return data.cartLinesRemove.cart;
 }
 
+export { shopifyFetch };
+
 
