@@ -1,7 +1,8 @@
-import Link from 'next/link';
-import { CollectionCard } from '@/components/collection-card';
-import { ProductCard } from '@/components/product-card';
-import { getFeaturedContent } from '@/lib/shopify';
+import Link from "next/link";
+import { CollectionCard } from "@/components/collection-card";
+import { ProductCard } from "@/components/product-card";
+import CollectionCarousel from "@/components/CollectionCarousel";
+import { getFeaturedContent } from "@/lib/shopify";
 
 export default async function HomePage() {
   const { collections, products } = await getFeaturedContent();
@@ -44,27 +45,26 @@ export default async function HomePage() {
         </div>
       </section>
 
+       {/* COLLECTIONS CAROUSEL */}
       <section className="space-y-6">
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.5em] text-black/50">Collections</p>
-            <h2 className="font-display text-4xl text-ink">Curated stories</h2>
+            <h2 className="font-display text-4xl text-ink">Collections</h2>
           </div>
-          <Link href="/collections" className="text-sm uppercase tracking-[0.3em] text-ink">
+          <Link
+            href="/collections"
+            className="text-sm uppercase tracking-[0.3em] text-ink"
+          >
             View all
           </Link>
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          {collections.map((collection) => (
-            <CollectionCard key={collection.id} collection={collection} />
-          ))}
-        </div>
+
+        <CollectionCarousel collections={collections} />
       </section>
 
       <section className="space-y-6">
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.5em] text-black/50">Catalog</p>
             <h2 className="font-display text-4xl text-ink">Recent arrivals</h2>
           </div>
           <Link href="/search" className="text-sm uppercase tracking-[0.3em] text-ink">
