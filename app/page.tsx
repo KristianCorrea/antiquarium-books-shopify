@@ -26,22 +26,7 @@ export default async function HomePage() {
             >
               Browse Collections
             </Link>
-            <Link
-              href="/search"
-              className="inline-flex items-center rounded-full border border-black/20 px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-ink"
-            >
-              Find a Title
-            </Link>
           </div>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2">
-          {products.slice(0, 2).map((product) => (
-            <div key={product.id} className="rounded-3xl bg-white/70 p-5 shadow-lg">
-              <p className="text-xs uppercase tracking-[0.4em] text-black/40">Featured</p>
-              <p className="mt-4 font-display text-2xl text-ink">{product.title}</p>
-              <p className="mt-2 text-sm text-black/70 line-clamp-3">{product.description}</p>
-            </div>
-          ))}
         </div>
       </section>
 
