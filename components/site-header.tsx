@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { siteConfig } from '@/lib/site-config';
 import { ShopifyCartButton } from '@/components/site-header/shopify-cart-button';
+import HeaderSearch from "@/components/HeaderSearch";
 
 export const SiteHeader = async () => {
   return (
@@ -17,12 +18,7 @@ export const SiteHeader = async () => {
           ))}
         </nav>
         <div className="flex items-center gap-3">
-          <Link
-            href="/search"
-            className="rounded-full border border-black/10 px-4 py-2 text-sm text-black/70 transition hover:border-black hover:text-ink"
-          >
-            Search
-          </Link>
+          <HeaderSearch />
           <ShopifyCartButton />
         </div>
       </div>
