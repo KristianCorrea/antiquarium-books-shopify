@@ -1,8 +1,8 @@
-import Image from 'next/image';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MoneyValue } from '@/components/money';
 import { AddToCartButton } from '@/app/(storefront)/products/_components/add-to-cart-button';
+import { ProductGallery } from '@/app/(storefront)/products/_components/product-gallery';
 import { getProductByHandle } from '@/lib/shopify';
 
 interface ProductPageProps {
@@ -28,28 +28,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const primaryVariant = product.variants.nodes[0];
   const priceMoney = primaryVariant?.price ?? product.priceRange.minVariantPrice;
 
+  // Extract images from media edges
+  const images = product.media.edges
+    .map(({ node }) => node.image)
+    .filter((img): img is NonNullable<typeof img> => img != null);
+
   return (
     <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.2fr_0.8fr]">
-      <div className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
-          {product.media.edges.length ? (
-            product.media.edges.map(({ node }, idx) => (
-              <div key={idx} className="relative aspect-[3/4] overflow-hidden rounded-3xl bg-parchment">
-                {node.image && (
-                  <Image
-                    src={node.image.url}
-                    alt={node.image.altText ?? product.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover"
-                  />
-                )}
-              </div>
-            ))
-          ) : (
-            <div className="aspect-[3/4] rounded-3xl bg-parchment" />
-          )}
-        </div>
+      <div className="min-w-0 overflow-hidden">
+        <ProductGallery images={images} productTitle={product.title} />
       </div>
       <div className="space-y-6">
         <div>
