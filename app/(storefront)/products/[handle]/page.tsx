@@ -35,7 +35,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.2fr_0.8fr]">
-      <div>
+      <div className="min-w-0 overflow-hidden">
         <ProductGallery images={images} productTitle={product.title} />
       </div>
       <div className="space-y-6">

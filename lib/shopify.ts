@@ -280,7 +280,7 @@ export async function getProductByHandle(handle: string) {
             title
             description
           }
-          media(first: 6) {
+          media(first: 20) {
             edges {
               node {
                 ... on MediaImage {

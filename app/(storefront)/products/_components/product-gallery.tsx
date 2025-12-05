@@ -53,7 +53,7 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="w-full space-y-4 overflow-hidden">
       {/* Main Image */}
       <div className="relative aspect-[3/4] lg:aspect-[5/4] overflow-hidden rounded-3xl bg-parchment">
         <Image
@@ -67,12 +67,12 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
       </div>
 
       {/* Thumbnail Carousel */}
-      <div className="relative">
+      <div className="relative flex items-center">
         {/* Left Arrow */}
         <button
           type="button"
           onClick={() => scrollCarousel('left')}
-          className="absolute -left-3 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-md transition-all hover:bg-white hover:shadow-lg"
+          className="z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/90 shadow-md transition-all hover:bg-white hover:shadow-lg"
           aria-label="Scroll images left"
         >
           <svg className="h-5 w-5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -83,7 +83,7 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
         {/* Thumbnails Container */}
         <div
           ref={carouselRef}
-          className="scrollbar-hide flex gap-3 overflow-x-auto scroll-smooth px-6"
+          className="scrollbar-hide mx-2 px-1 flex min-w-0 flex-1 gap-3 overflow-x-auto scroll-smooth"
         >
           {images.map((image, idx) => (
             <button
@@ -113,7 +113,7 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
         <button
           type="button"
           onClick={() => scrollCarousel('right')}
-          className="absolute -right-3 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-md transition-all hover:bg-white hover:shadow-lg"
+          className="z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/90 shadow-md transition-all hover:bg-white hover:shadow-lg"
           aria-label="Scroll images right"
         >
           <svg className="h-5 w-5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
