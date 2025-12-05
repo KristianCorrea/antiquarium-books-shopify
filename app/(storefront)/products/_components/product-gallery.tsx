@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 interface MediaImage {
@@ -17,7 +17,30 @@ interface ProductGalleryProps {
 
 export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
+
+  const checkScrollPosition = useCallback(() => {
+    if (!carouselRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+    setCanScrollLeft(scrollLeft > 1);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+  }, []);
+
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    checkScrollPosition();
+    carousel.addEventListener('scroll', checkScrollPosition);
+    window.addEventListener('resize', checkScrollPosition);
+
+    return () => {
+      carousel.removeEventListener('scroll', checkScrollPosition);
+      window.removeEventListener('resize', checkScrollPosition);
+    };
+  }, [checkScrollPosition, images]);
 
   // Empty state
   if (images.length === 0) {
@@ -72,10 +95,21 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
         <button
           type="button"
           onClick={() => scrollCarousel('left')}
-          className="z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/90 shadow-md transition-all hover:bg-white hover:shadow-lg"
+          disabled={!canScrollLeft}
+          className={`z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full shadow-md transition-all ${
+            canScrollLeft
+              ? 'bg-white/90 hover:bg-white hover:shadow-lg'
+              : 'cursor-default bg-white/50 shadow-none'
+          }`}
           aria-label="Scroll images left"
         >
-          <svg className="h-5 w-5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg
+            className={`h-5 w-5 transition-colors ${canScrollLeft ? 'text-ink' : 'text-black/20'}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
@@ -113,10 +147,21 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
         <button
           type="button"
           onClick={() => scrollCarousel('right')}
-          className="z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/90 shadow-md transition-all hover:bg-white hover:shadow-lg"
+          disabled={!canScrollRight}
+          className={`z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full shadow-md transition-all ${
+            canScrollRight
+              ? 'bg-white/90 hover:bg-white hover:shadow-lg'
+              : 'cursor-default bg-white/50 shadow-none'
+          }`}
           aria-label="Scroll images right"
         >
-          <svg className="h-5 w-5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg
+            className={`h-5 w-5 transition-colors ${canScrollRight ? 'text-ink' : 'text-black/20'}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
