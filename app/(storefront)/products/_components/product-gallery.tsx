@@ -1,5 +1,18 @@
 'use client';
 
+/**
+ * ProductGallery - Interactive image gallery for product detail pages
+ *
+ * Displays product images with three modes:
+ * 1. Empty state: Shows a placeholder when no images exist
+ * 2. Single image: Displays just the one image at full size
+ * 3. Multiple images: Main image + scrollable thumbnail carousel
+ *
+ * The thumbnail carousel allows users to select which image to view
+ * in the main display. Arrow buttons scroll the carousel and gray out
+ * when reaching the edges (similar to eBay's gallery UX).
+ */
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
@@ -16,11 +29,20 @@ interface ProductGalleryProps {
 }
 
 export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
+  // Track which image is currently displayed in the main view
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  // Track scroll state to enable/disable arrow buttons at edges
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+
+  // Ref to the scrollable thumbnail container for programmatic scrolling
   const carouselRef = useRef<HTMLDivElement>(null);
 
+  /**
+   * Checks the carousel's scroll position and updates arrow states.
+   * Uses a 1px threshold to account for sub-pixel rendering differences.
+   */
   const checkScrollPosition = useCallback(() => {
     if (!carouselRef.current) return;
     const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
@@ -28,11 +50,14 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
   }, []);
 
+  // Set up scroll position tracking on mount, scroll, and resize
   useEffect(() => {
     const carousel = carouselRef.current;
     if (!carousel) return;
 
     checkScrollPosition();
+
+    // Listen for scroll and resize events to update arrow states
     carousel.addEventListener('scroll', checkScrollPosition);
     window.addEventListener('resize', checkScrollPosition);
 
@@ -42,14 +67,14 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
     };
   }, [checkScrollPosition, images]);
 
-  // Empty state
+  // Empty state - show placeholder
   if (images.length === 0) {
     return <div className="aspect-[3/4] lg:aspect-[5/4] rounded-3xl bg-parchment" />;
   }
 
   const selectedImage = images[selectedIndex];
 
-  // Single image - just show it
+  // Single image - no carousel needed, just display the image
   if (images.length === 1) {
     return (
       <div className="relative aspect-[3/4] lg:aspect-[5/4] overflow-hidden rounded-3xl bg-parchment">
@@ -65,10 +90,15 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
     );
   }
 
-  // Multiple images - main image + carousel
+  // Multiple images - render main image + thumbnail carousel
+
+  /**
+   * Scrolls the thumbnail carousel by a fixed amount onClick for arrow buttons.
+   * The scroll amount (120px) is roughly one thumbnail width + gap.
+   */
   const scrollCarousel = (direction: 'left' | 'right') => {
     if (!carouselRef.current) return;
-    const scrollAmount = 120; // thumbnail width + gap
+    const scrollAmount = 120;
     carouselRef.current.scrollBy({
       left: direction === 'left' ? -scrollAmount : scrollAmount,
       behavior: 'smooth'
@@ -77,7 +107,7 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
 
   return (
     <div className="w-full space-y-4 overflow-hidden">
-      {/* Main Image */}
+      {/* Main Image - displays the currently selected image */}
       <div className="relative aspect-[3/4] lg:aspect-[5/4] overflow-hidden rounded-3xl bg-parchment">
         <Image
           src={selectedImage.url}
@@ -89,9 +119,9 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
         />
       </div>
 
-      {/* Thumbnail Carousel */}
+      {/* Thumbnail Carousel - horizontal scrollable row of image thumbnails */}
       <div className="relative flex items-center">
-        {/* Left Arrow */}
+        {/* Left Arrow - grays out when at the start of the carousel */}
         <button
           type="button"
           onClick={() => scrollCarousel('left')}
@@ -143,7 +173,7 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
           ))}
         </div>
 
-        {/* Right Arrow */}
+        {/* Right Arrow - grays out when at the end of the carousel */}
         <button
           type="button"
           onClick={() => scrollCarousel('right')}
@@ -169,4 +199,3 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
     </div>
   );
 }
-
