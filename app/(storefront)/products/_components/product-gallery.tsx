@@ -108,7 +108,7 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
   return (
     <div className="w-full space-y-4 overflow-hidden">
       {/* Main Image - displays the currently selected image */}
-      <div className="relative aspect-[3/4] lg:aspect-[5/4] overflow-hidden rounded-3xl bg-parchment">
+      <div className="relative aspect-[1] md:aspect-[1] lg:aspect-[5/4] overflow-hidden rounded-3xl bg-parchment">
         <Image
           src={selectedImage.url}
           alt={selectedImage.altText ?? productTitle}
@@ -154,7 +154,7 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
               key={idx}
               type="button"
               onClick={() => setSelectedIndex(idx)}
-              className={`relative my-1 aspect-[3/4] w-20 flex-shrink-0 overflow-hidden rounded-xl transition-all ${
+              className={`relative my-1 aspect-[1] w-20 flex-shrink-0 overflow-hidden rounded-xl transition-all ${
                 idx === selectedIndex
                   ? 'ring-2 ring-ink ring-offset-2'
                   : 'opacity-60 hover:opacity-100'
