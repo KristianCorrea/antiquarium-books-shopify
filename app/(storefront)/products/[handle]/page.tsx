@@ -34,15 +34,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .filter((img): img is NonNullable<typeof img> => img != null);
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.2fr_0.8fr]">
+    <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-[1.2fr_0.8fr] lg:grid-cols-[1.2fr_0.8fr]">
       <div className="min-w-0 overflow-hidden">
         <ProductGallery images={images} productTitle={product.title} />
       </div>
       <div className="space-y-6">
         <div>
           <p className="text-xs uppercase tracking-[0.5em] text-black/50">Vintage find</p>
-          <h1 className="font-display text-5xl text-ink">{product.title}</h1>
-          <div className="mt-3 text-2xl font-medium text-ink">
+          <h1 className="font-display text-3xl text-ink">{product.title}</h1>
+          <div className="mt-3 text-2xl font-bold text-ink">
             <MoneyValue money={priceMoney} />
           </div>
         </div>
