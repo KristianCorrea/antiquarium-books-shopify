@@ -41,7 +41,6 @@ export default async function CollectionPage({ params, searchParams }: Collectio
       {/* MAIN CONTENT */}
       <div className="flex flex-col flex-1 gap-10">
         <header className="space-y-4">
-          <p className="text-xs uppercase tracking-[0.5em] text-black/50">Collection</p>
           <h1 className="font-display text-5xl text-ink">{data.title}</h1>
           {data.description && <p className="text-lg text-black/70">{data.description}</p>}
         </header>
