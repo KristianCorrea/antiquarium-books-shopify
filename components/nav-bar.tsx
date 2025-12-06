@@ -11,9 +11,6 @@ export default function Sidebar() {
         <Link href="/collections/antiquarian-books" className="block text-black/70 hover:text-ink">
           Antiquarian Books
         </Link>
-        <Link href="/collections/antiquarian-music" className="block text-black/70 hover:text-ink">
-          Antiquarian Music
-        </Link>
         <Link href="/collections/autographs" className="block text-black/70 hover:text-ink">
           Autographs
         </Link>
