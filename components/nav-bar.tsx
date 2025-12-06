@@ -14,17 +14,23 @@ export default function Sidebar() {
         <Link href="/collections/antiquarian-music" className="block text-black/70 hover:text-ink">
           Antiquarian Music
         </Link>
-        <Link href="/collections/other-autographs" className="block text-black/70 hover:text-ink">
-          Other Autographs
+        <Link href="/collections/autographs" className="block text-black/70 hover:text-ink">
+          Autographs
         </Link>
         <Link href="/collections/art-and-prints" className="block text-black/70 hover:text-ink">
           Art and Prints
         </Link>
-        <Link href="/collections/animation-and-manga" className="block text-black/70 hover:text-ink">
-          Animation and Manga
+        <Link href="/collections/anime-figurines-merchandise" className="block text-black/70 hover:text-ink">
+          Anime Figurines & Merchandise
         </Link>
-        <Link href="/collections/other-collections" className="block text-black/70 hover:text-ink">
-          Other Collections
+         <Link href="/collections/jewelry" className="block text-black/70 hover:text-ink">
+          Jewelry
+        </Link>
+        <Link href="/collections/furniture" className="block text-black/70 hover:text-ink">
+         Furniture
+        </Link>
+        <Link href="/collections/others" className="block text-black/70 hover:text-ink">
+          Others
         </Link>
       </nav>
     </aside>
