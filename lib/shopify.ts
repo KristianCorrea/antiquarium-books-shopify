@@ -11,10 +11,10 @@ type GraphQLParams = {
   query: string;
   variables?: Record<string, unknown>;
   cache?: RequestCache;
-  tags?: string[];
+  next?: { revalidate?: number; tags?: string[] };
 };
 
-async function shopifyFetch<T>({ query, variables, cache = 'force-cache', tags = [] }: GraphQLParams) {
+async function shopifyFetch<T>({ query, variables, cache = 'force-cache', next }: GraphQLParams) {
   if (!endpoint || !accessToken) {
     throw new Error('Missing Shopify environment variables.');
   }
@@ -27,7 +27,7 @@ async function shopifyFetch<T>({ query, variables, cache = 'force-cache', tags =
     },
     body: JSON.stringify({ query, variables }),
     cache,
-    next: { tags }
+    next
   });
 
   if (!response.ok) {
@@ -174,7 +174,7 @@ export async function getFeaturedContent() {
       }
     `,
     cache: 'force-cache',
-    tags: ['collections', 'products']
+    next: { revalidate: 300, tags: ['collections', 'products'] }
   });
 
   return {
@@ -203,7 +203,7 @@ export async function getCollections(limit = 12) {
     `,
     variables: { limit },
     cache: 'force-cache',
-    tags: ['collections']
+    next: { revalidate: 300, tags: ['collections'] }
   });
 
   return data.collections.edges.map(({ node }) => node);
@@ -429,8 +429,7 @@ export async function cartLinesAdd(cartId: string, lines: Array<{ merchandiseId:
       }
     `,
     variables: { cartId, lines },
-    cache: 'no-store',
-    tags: ['cart']
+    cache: 'no-store'
   });
 
   return data.cartLinesAdd.cart;
@@ -449,8 +448,7 @@ export async function cartLinesUpdate(cartId: string, lines: Array<{ id: string;
       }
     `,
     variables: { cartId, lines },
-    cache: 'no-store',
-    tags: ['cart']
+    cache: 'no-store'
   });
 
   return data.cartLinesUpdate.cart;
@@ -469,8 +467,7 @@ export async function cartLinesRemove(cartId: string, lineIds: string[]) {
       }
     `,
     variables: { cartId, lineIds },
-    cache: 'no-store',
-    tags: ['cart']
+    cache: 'no-store'
   });
 
   return data.cartLinesRemove.cart;
