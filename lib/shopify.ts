@@ -14,7 +14,7 @@ type GraphQLParams = {
   next?: { revalidate?: number; tags?: string[] };
 };
 
-async function shopifyFetch<T>({ query, variables, cache = 'force-cache', next }: GraphQLParams) {
+async function shopifyFetch<T>({ query, variables, cache, next }: GraphQLParams) {
   if (!endpoint || !accessToken) {
     throw new Error('Missing Shopify environment variables.');
   }
@@ -26,7 +26,7 @@ async function shopifyFetch<T>({ query, variables, cache = 'force-cache', next }
       'X-Shopify-Storefront-Access-Token': accessToken
     },
     body: JSON.stringify({ query, variables }),
-    cache,
+    ...(cache && { cache }),
     next
   });
 
@@ -157,7 +157,7 @@ export async function getFeaturedContent() {
       ${PRODUCT_CARD}
       ${COLLECTION_CARD}
       query FeaturedContent {
-        collections(first: 4, sortKey: UPDATED_AT) {
+        collections(first: 15, sortKey: UPDATED_AT) {
           edges {
             node {
               ...CollectionCard
@@ -173,7 +173,6 @@ export async function getFeaturedContent() {
         }
       }
     `,
-    cache: 'force-cache',
     next: { revalidate: 300, tags: ['collections', 'products'] }
   });
 
@@ -202,7 +201,6 @@ export async function getCollections(limit = 12) {
       }
     `,
     variables: { limit },
-    cache: 'force-cache',
     next: { revalidate: 300, tags: ['collections'] }
   });
 
