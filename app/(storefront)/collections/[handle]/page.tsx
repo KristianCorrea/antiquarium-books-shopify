@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { ProductCard } from '@/components/product-card';
 import Sidebar from '@/components/nav-bar';
 import { getCollectionByHandle } from '@/lib/shopify';
+import SortDropdown from "@/components/sort-dropdown";
 
 interface CollectionPageProps {
   params: { handle: string };
-  searchParams?: { cursor?: string };
+  searchParams?: { cursor?: string; sort?: string };
 }
 
 export async function generateMetadata({ params }: CollectionPageProps): Promise<Metadata> {
@@ -22,7 +23,11 @@ export async function generateMetadata({ params }: CollectionPageProps): Promise
 }
 
 export default async function CollectionPage({ params, searchParams }: CollectionPageProps) {
-  const data = await getCollectionByHandle(params.handle, searchParams?.cursor);
+  const data = await getCollectionByHandle(
+    params.handle,
+    searchParams?.cursor,
+    searchParams?.sort
+  );
 
   if (!data) {
     notFound();
@@ -46,16 +51,25 @@ export default async function CollectionPage({ params, searchParams }: Collectio
           {data.description && <p className="text-lg text-black/70">{data.description}</p>}
         </header>
 
+        {/* SORT DROPDOWN */}
+        <div className="flex justify-end">
+          <SortDropdown />
+        </div>
+
+        {/* PRODUCT GRID */}
         <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {products.edges.map(({ node }) => (
             <ProductCard key={node.id} product={node} />
           ))}
         </section>
 
+        {/* LOAD MORE BUTTON WITH SORT PRESERVED */}
         {hasNextPage && endCursor && (
           <div className="text-center">
             <Link
-              href={`/collections/${params.handle}?cursor=${encodeURIComponent(endCursor)}`}
+              href={`/collections/${params.handle}?cursor=${encodeURIComponent(
+                endCursor
+              )}${searchParams?.sort ? `&sort=${searchParams.sort}` : ''}`}
               className="inline-flex items-center rounded-full border border-ink px-6 py-3 text-sm uppercase tracking-[0.3em]"
             >
               Load more

@@ -229,7 +229,13 @@ export async function getCollectionsNames(limit = 12) {
   return data.collections.edges.map(({ node }) => node.title);
 }
 
-export async function getCollectionByHandle(handle: string, cursor?: string) {
+export async function getCollectionByHandle(
+  handle: string,
+  cursor?: string,
+  sort?: string
+) {
+  const { sortKey, reverse } = mapSort(sort);
+
   const data = await shopifyFetch<{
     collection: CollectionCard & {
       products: {
@@ -240,7 +246,12 @@ export async function getCollectionByHandle(handle: string, cursor?: string) {
   }>({
     query: `
       ${PRODUCT_CARD}
-      query CollectionByHandle($handle: String!, $cursor: String) {
+      query CollectionByHandle(
+        $handle: String!,
+        $cursor: String,
+        $sortKey: ProductCollectionSortKeys,
+        $reverse: Boolean
+      ) {
         collection(handle: $handle) {
           id
           handle
@@ -250,7 +261,12 @@ export async function getCollectionByHandle(handle: string, cursor?: string) {
             url
             altText
           }
-          products(first: 12, after: $cursor) {
+          products(
+            first: 12,
+            after: $cursor,
+            sortKey: $sortKey,
+            reverse: $reverse
+          ) {
             pageInfo {
               hasNextPage
               endCursor
@@ -264,12 +280,30 @@ export async function getCollectionByHandle(handle: string, cursor?: string) {
         }
       }
     `,
-    variables: { handle, cursor },
+    variables: { handle, cursor, sortKey, reverse },
     cache: 'no-store'
   });
 
   return data.collection;
 }
+
+function mapSort(sort?: string) {
+  switch (sort) {
+    case "price-asc":
+      return { sortKey: "PRICE", reverse: false };
+    case "price-desc":
+      return { sortKey: "PRICE", reverse: true };
+    case "title-asc":
+      return { sortKey: "TITLE", reverse: false };
+    case "title-desc":
+      return { sortKey: "TITLE", reverse: true };
+    case "newest":
+      return { sortKey: "CREATED_AT", reverse: true };
+    default:
+      return { sortKey: "MANUAL", reverse: false }; 
+  }
+}
+
 
 export async function getProductByHandle(handle: string) {
   const data = await shopifyFetch<{
