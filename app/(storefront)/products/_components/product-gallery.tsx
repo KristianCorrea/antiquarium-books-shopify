@@ -36,6 +36,9 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
+  // Track if carousel has overflow (needs scrolling at all)
+  const [isScrollable, setIsScrollable] = useState(false);
+
   // Ref to the scrollable thumbnail container for programmatic scrolling
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +51,8 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
     const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
     setCanScrollLeft(scrollLeft > 1);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+    // Check if content overflows (scrolling is needed)
+    setIsScrollable(scrollWidth > clientWidth + 1);
   }, []);
 
   // Set up scroll position tracking on mount, scroll, and resize
@@ -121,28 +126,30 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
 
       {/* Thumbnail Carousel - horizontal scrollable row of image thumbnails */}
       <div className="relative flex items-center">
-        {/* Left Arrow - grays out when at the start of the carousel */}
-        <button
-          type="button"
-          onClick={() => scrollCarousel('left')}
-          disabled={!canScrollLeft}
-          className={`z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full shadow-md transition-all ${
-            canScrollLeft
-              ? 'bg-white/90 hover:bg-white hover:shadow-lg'
-              : 'cursor-default bg-white/50 shadow-none'
-          }`}
-          aria-label="Scroll images left"
-        >
-          <svg
-            className={`h-5 w-5 transition-colors ${canScrollLeft ? 'text-ink' : 'text-black/20'}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+        {/* Left Arrow - only shown when carousel is scrollable, grays out at start */}
+        {isScrollable && (
+          <button
+            type="button"
+            onClick={() => scrollCarousel('left')}
+            disabled={!canScrollLeft}
+            className={`z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full shadow-md transition-all ${
+              canScrollLeft
+                ? 'bg-white/90 hover:bg-white hover:shadow-lg'
+                : 'cursor-default bg-white/50 shadow-none'
+            }`}
+            aria-label="Scroll images left"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
+            <svg
+              className={`h-5 w-5 transition-colors ${canScrollLeft ? 'text-ink' : 'text-black/20'}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        )}
 
         {/* Thumbnails Container */}
         <div
@@ -173,28 +180,30 @@ export function ProductGallery({ images, productTitle }: ProductGalleryProps) {
           ))}
         </div>
 
-        {/* Right Arrow - grays out when at the end of the carousel */}
-        <button
-          type="button"
-          onClick={() => scrollCarousel('right')}
-          disabled={!canScrollRight}
-          className={`z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full shadow-md transition-all ${
-            canScrollRight
-              ? 'bg-white/90 hover:bg-white hover:shadow-lg'
-              : 'cursor-default bg-white/50 shadow-none'
-          }`}
-          aria-label="Scroll images right"
-        >
-          <svg
-            className={`h-5 w-5 transition-colors ${canScrollRight ? 'text-ink' : 'text-black/20'}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+        {/* Right Arrow - only shown when carousel is scrollable, grays out at end */}
+        {isScrollable && (
+          <button
+            type="button"
+            onClick={() => scrollCarousel('right')}
+            disabled={!canScrollRight}
+            className={`z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full shadow-md transition-all ${
+              canScrollRight
+                ? 'bg-white/90 hover:bg-white hover:shadow-lg'
+                : 'cursor-default bg-white/50 shadow-none'
+            }`}
+            aria-label="Scroll images right"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+            <svg
+              className={`h-5 w-5 transition-colors ${canScrollRight ? 'text-ink' : 'text-black/20'}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
       </div>
     </div>
   );
