@@ -207,6 +207,28 @@ export async function getCollections(limit = 12) {
   return data.collections.edges.map(({ node }) => node);
 }
 
+export async function getCollectionsNames(limit = 12) {
+  const data = await shopifyFetch<{
+    collections: { edges: Array<{ node: { title: string } }> };
+  }>({
+    query: `
+      query Collections($limit: Int!) {
+        collections(first: $limit, sortKey: TITLE) {
+          edges {
+            node {
+              title
+            }
+          }
+        }
+      }
+    `,
+    variables: { limit },
+    next: { revalidate: 300, tags: ['collections'] }
+  });
+
+  return data.collections.edges.map(({ node }) => node.title);
+}
+
 export async function getCollectionByHandle(handle: string, cursor?: string) {
   const data = await shopifyFetch<{
     collection: CollectionCard & {
