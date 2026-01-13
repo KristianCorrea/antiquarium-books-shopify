@@ -152,6 +152,11 @@ export async function getFeaturedContent() {
   const data = await shopifyFetch<{
     collections: { edges: Array<{ node: CollectionCard }> };
     products: { edges: Array<{ node: ProductCard }> };
+    featured: {
+      products: {
+        edges: Array<{ node: ProductCard }>;
+      };
+    } | null;
   }>({
     query: `
       ${PRODUCT_CARD}
@@ -164,6 +169,7 @@ export async function getFeaturedContent() {
             }
           }
         }
+
         products(first: 8, sortKey: CREATED_AT, reverse: true) {
           edges {
             node {
@@ -171,14 +177,25 @@ export async function getFeaturedContent() {
             }
           }
         }
+
+        featured: collection(handle: "featured") {
+          products(first: 15) {
+            edges {
+              node {
+                ...ProductCard
+              }
+            }
+          }
+        }
       }
     `,
-    next: { revalidate: 300, tags: ['collections', 'products'] }
+    next: { revalidate: 300, tags: ['collections', 'products', 'featured'] }
   });
 
   return {
-    collections: data.collections.edges.map((edge) => edge.node),
-    products: data.products.edges.map((edge) => edge.node)
+    collections: data.collections.edges.map(e => e.node),
+    products: data.products.edges.map(e => e.node),
+    featured: data.featured?.products.edges.map(e => e.node) ?? []
   };
 }
 
