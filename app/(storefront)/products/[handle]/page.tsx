@@ -50,15 +50,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         {/* Right: Product Info Sidebar */}
         <div className="space-y-6">
-          {/* Title */}
-          <div>
-            <h1 className="font-display text-3xl leading-tight text-ink lg:text-4xl">
-              {product.title}
-            </h1>
-          </div>
+          
 
-          {/* Price Card */}
+          {/* Product Info Card */}
           <div className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
+            {/* Title */}
+            <div className="pb-5">
+              <h1 className="font-display text-3xl leading-tight 1 text-ink lg:text-3xl">
+                {product.title}
+              </h1>
+            </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold text-ink">
                 <MoneyValue money={priceMoney} />
