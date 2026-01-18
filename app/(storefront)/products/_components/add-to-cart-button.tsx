@@ -21,7 +21,7 @@ export const AddToCartButton = ({ variantId }: AddToCartButtonProps) => {
           setTimeout(() => setStatus('idle'), 2500);
         });
       }}
-      className="button-glow inline-flex items-center justify-center rounded-full bg-ink px-8 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-white disabled:cursor-not-allowed disabled:opacity-60"
+      className="button-glow inline-flex items-center justify-center rounded-full bg-ink px-8 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-white disabled:cursor-not-allowed disabled:opacity-60 w-full"
       disabled={isPending}
     >
       {isPending ? 'Adding...' : status === 'added' ? 'Added' : 'Add to cart'}

@@ -33,37 +33,105 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .map(({ node }) => node.image)
     .filter((img): img is NonNullable<typeof img> => img != null);
 
+  // Extract valid metafields for display
+  const validMetafields = product.metafields?.filter(
+    (field): field is NonNullable<typeof field> => 
+      field != null && field.value != null && field.value.trim() !== ''
+  ) ?? [];
+
   return (
-    <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-[1.2fr_0.8fr] lg:grid-cols-[1.2fr_0.8fr]">
-      <div className="min-w-0 overflow-hidden">
-        <ProductGallery images={images} productTitle={product.title} />
-      </div>
-      <div className="space-y-6">
-        <div>
-          <p className="text-xs uppercase tracking-[0.5em] text-black/50">Vintage find</p>
-          <h1 className="font-display text-3xl text-ink">{product.title}</h1>
-          <div className="mt-3 text-2xl font-bold text-ink">
-            <MoneyValue money={priceMoney} />
+    <div className="mx-auto max-w-7xl">
+      {/* Main product section */}
+      <div className="grid gap-8 lg:grid-cols-[1fr_400px]">
+        {/* Left: Image Gallery */}
+        <div className="min-w-0">
+          <ProductGallery images={images} productTitle={product.title} />
+        </div>
+
+        {/* Right: Product Info Sidebar */}
+        <div className="space-y-6">
+          {/* Title */}
+          <div>
+            <h1 className="font-display text-3xl leading-tight text-ink lg:text-4xl">
+              {product.title}
+            </h1>
+          </div>
+
+          {/* Price Card */}
+          <div className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-bold text-ink">
+                <MoneyValue money={priceMoney} />
+              </span>
+            </div>
+
+            {/* Availability */}
+            <div className="mt-4">
+              {primaryVariant && primaryVariant.availableForSale ? (
+                <div className="flex items-center gap-2 text-sm text-green-700">
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-medium">Available</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-sm text-red-700">
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-medium">Currently unavailable</span>
+                </div>
+              )}
+            </div>
+
+            {/* Add to Cart Button */}
+            {primaryVariant && primaryVariant.availableForSale && (
+              <div className="mt-6">
+                <AddToCartButton variantId={primaryVariant.id} />
+              </div>
+            )}
+          </div>
+
+          {/* Item Details Card */}
+          {validMetafields.length > 0 && (
+            <div className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-black/60">
+                Item Details
+              </h2>
+              <dl className="space-y-3">
+                {validMetafields.map((field) => (
+                  <div key={field.key} className="flex justify-between border-b border-black/5 pb-3 last:border-0 last:pb-0">
+                    <dt className="text-sm text-black/60">
+                      {field.key.charAt(0).toUpperCase() + field.key.slice(1).replace(/_/g, ' ')}
+                    </dt>
+                    <dd className="text-sm font-medium text-ink">{field.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
+
+          {/* Vintage Badge */}
+          <div className="rounded-2xl border border-patina/20 bg-patina/5 p-4">
+            <div className="flex items-center gap-2">
+              <svg className="h-5 w-5 text-patina" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-sm font-medium text-patina">Vintage Find</span>
+            </div>
           </div>
         </div>
-        <div className="prose prose-neutral" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
-        {primaryVariant && primaryVariant.availableForSale ? (
-          <AddToCartButton variantId={primaryVariant.id} />
-        ) : (
-          <p className="text-sm uppercase tracking-[0.3em] text-red-700">Currently unavailable</p>
-        )}
-        {!!product.metafields?.length && (
-          <dl className="grid grid-cols-2 gap-4 rounded-3xl bg-white/70 p-6 text-sm">
-            {product.metafields.map((field) =>
-              field?.value ? (
-                <div key={field.key}>
-                  <dt className="uppercase tracking-[0.3em] text-black/40">{field.key}</dt>
-                  <dd className="text-ink">{field.value}</dd>
-                </div>
-              ) : null
-            )}
-          </dl>
-        )}
+      </div>
+
+      {/* Description Section - Full Width at Bottom */}
+      <div className="mt-12 rounded-2xl border border-black/10 bg-white p-8 shadow-sm">
+        <h2 className="mb-6 text-2xl font-display font-semibold text-ink">
+          Description
+        </h2>
+        <div 
+          className="prose prose-neutral max-w-none prose-headings:font-display prose-headings:text-ink prose-p:text-black/80 prose-a:text-patina prose-strong:text-ink"
+          dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+        />
       </div>
     </div>
   );
