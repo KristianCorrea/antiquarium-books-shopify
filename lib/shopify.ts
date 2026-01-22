@@ -153,10 +153,8 @@ export async function getFeaturedContent() {
     collections: { edges: Array<{ node: CollectionCard }> };
     products: { edges: Array<{ node: ProductCard }> };
     featured: {
-      products: {
-        edges: Array<{ node: ProductCard }>;
-      };
-    } | null;
+      edges: Array<{ node: ProductCard }>;
+    };
   }>({
     query: `
       ${PRODUCT_CARD}
@@ -178,12 +176,10 @@ export async function getFeaturedContent() {
           }
         }
 
-        featured: collection(handle: "featured") {
-          products(first: 15) {
-            edges {
-              node {
-                ...ProductCard
-              }
+        featured: products(first: 15, query: "tag:featured", sortKey: CREATED_AT, reverse: true) {
+          edges {
+            node {
+              ...ProductCard
             }
           }
         }
@@ -195,7 +191,7 @@ export async function getFeaturedContent() {
   return {
     collections: data.collections.edges.map(e => e.node),
     products: data.products.edges.map(e => e.node),
-    featured: data.featured?.products.edges.map(e => e.node) ?? []
+    featured: data.featured?.edges.map(e => e.node)
   };
 }
 
