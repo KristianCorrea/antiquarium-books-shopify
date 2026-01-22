@@ -5,7 +5,7 @@ import CollectionCarousel from "@/components/CollectionCarousel";
 import { getFeaturedContent } from "@/lib/shopify";
 
 export default async function HomePage() {
-  const { collections, products } = await getFeaturedContent();
+  const { collections, products, featured } = await getFeaturedContent();
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-16">
@@ -47,6 +47,21 @@ export default async function HomePage() {
         <CollectionCarousel collections={collections} />
       </section>
 
+       {/* Features */}
+      <section className="space-y-6">
+        <div className="flex items-end justify-between">
+          <div>
+            <h2 className="font-display text-4xl text-ink">Featured Items</h2>
+          </div>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {featured.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+
+      {/* Recent Arrivals */}
       <section className="space-y-6">
         <div className="flex items-end justify-between">
           <div>
