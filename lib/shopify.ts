@@ -366,6 +366,10 @@ export async function predictiveSearch(query: string) {
 }
 
 export async function searchProducts(query: string, cursor?: string) {
+  const searchQuery = `
+    title:*${query}* OR description:*${query}*
+  `;
+
   const data = await shopifyFetch<{
     search: {
       edges: Array<{ cursor: string; node: ProductCard }>;
@@ -375,7 +379,12 @@ export async function searchProducts(query: string, cursor?: string) {
     query: `
       ${PRODUCT_CARD}
       query ProductSearch($query: String!, $cursor: String) {
-        search(query: $query, first: 12, after: $cursor, types: PRODUCT) {
+        search(
+          query: $query,
+          first: 12,
+          after: $cursor,
+          types: PRODUCT
+        ) {
           edges {
             cursor
             node {
@@ -391,7 +400,10 @@ export async function searchProducts(query: string, cursor?: string) {
         }
       }
     `,
-    variables: { query, cursor },
+    variables: {
+      query: searchQuery,
+      cursor,
+    },
     cache: 'no-store'
   });
 
@@ -400,6 +412,7 @@ export async function searchProducts(query: string, cursor?: string) {
     pageInfo: data.search.pageInfo
   };
 }
+
 
 export async function cartCreate() {
   const data = await shopifyFetch<{ cartCreate: { cart: Cart } }>({
