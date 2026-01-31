@@ -18,6 +18,15 @@ const config: Config = {
       fontFamily: {
         display: ['"Cormorant Garamond"', 'serif'],
         body: ['"Inter"', 'sans-serif']
+      },
+      animation: {
+        shimmer: 'shimmer 2s infinite'
+      },
+      keyframes: {
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
+        }
       }
     }
   },

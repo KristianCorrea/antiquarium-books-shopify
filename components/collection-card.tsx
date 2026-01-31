@@ -1,8 +1,13 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { CollectionCard as ShopifyCollection } from '@/types/shopify';
 
 export const CollectionCard = ({ collection }: { collection: ShopifyCollection }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <Link
       href={`/collections/${collection.handle}`}
@@ -10,12 +15,21 @@ export const CollectionCard = ({ collection }: { collection: ShopifyCollection }
     >
       {collection.image ? (
         <div className="relative aspect-[3/2] overflow-hidden rounded-2xl bg-parchment">
+          {/* Shimmer placeholder */}
+          {isLoading && (
+            <div className="absolute inset-0 bg-gradient-to-r from-parchment via-parchment/80 to-parchment">
+              <div className="h-full w-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+            </div>
+          )}
           <Image
             src={collection.image.url}
             alt={collection.image.altText ?? collection.title}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover transition duration-500 group-hover:scale-105"
+            className={`object-cover transition-all duration-500 group-hover:scale-105 ${
+              isLoading ? 'opacity-0' : 'opacity-100'
+            }`}
+            onLoad={() => setIsLoading(false)}
           />
         </div>
       ) : (
