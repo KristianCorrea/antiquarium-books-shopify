@@ -8,7 +8,7 @@ export const SiteHeader = async () => {
     <header className="sticky top-0 z-30 border-b border-black/5 bg-parchment/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <Link href="/" className="font-display text-2xl tracking-tight">
-         Antiquarium Books Shopify
+         Antiquarium Books
         </Link>
         <nav className="hidden gap-6 text-sm uppercase tracking-widest text-black/70 sm:flex">
           {siteConfig.navigation.map((navItem) => (
