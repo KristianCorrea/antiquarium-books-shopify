@@ -30,7 +30,7 @@ export const ProductCard = ({ product }: { product: ProductCardType }) => {
         <div className="text-xs uppercase tracking-[0.25em] text-black/50">
           {year ? `Circa ${year}` : 'Vintage'} - {condition ?? 'Fine'}
         </div>
-        <h3 className="font-display text-2xl leading-tight text-ink">{product.title}</h3>
+        <h3 className="font-display text-2xl leading-tight text-ink line-clamp-2">{product.title}</h3>
         {author && <p className="text-sm text-black/70">by {author}</p>}
         <div className="mt-2 text-lg font-semibold text-ink">
           <MoneyValue money={product.priceRange.minVariantPrice} />

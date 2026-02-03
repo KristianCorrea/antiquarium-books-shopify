@@ -11,10 +11,10 @@ type GraphQLParams = {
   query: string;
   variables?: Record<string, unknown>;
   cache?: RequestCache;
-  tags?: string[];
+  next?: { revalidate?: number; tags?: string[] };
 };
 
-async function shopifyFetch<T>({ query, variables, cache = 'force-cache', tags = [] }: GraphQLParams) {
+async function shopifyFetch<T>({ query, variables, cache, next }: GraphQLParams) {
   if (!endpoint || !accessToken) {
     throw new Error('Missing Shopify environment variables.');
   }
@@ -26,8 +26,8 @@ async function shopifyFetch<T>({ query, variables, cache = 'force-cache', tags =
       'X-Shopify-Storefront-Access-Token': accessToken
     },
     body: JSON.stringify({ query, variables }),
-    cache,
-    next: { tags }
+    ...(cache && { cache }),
+    next
   });
 
   if (!response.ok) {
@@ -152,19 +152,31 @@ export async function getFeaturedContent() {
   const data = await shopifyFetch<{
     collections: { edges: Array<{ node: CollectionCard }> };
     products: { edges: Array<{ node: ProductCard }> };
+    featured: {
+      edges: Array<{ node: ProductCard }>;
+    };
   }>({
     query: `
       ${PRODUCT_CARD}
       ${COLLECTION_CARD}
       query FeaturedContent {
-        collections(first: 4, sortKey: UPDATED_AT) {
+        collections(first: 15, sortKey: UPDATED_AT) {
           edges {
             node {
               ...CollectionCard
             }
           }
         }
+
         products(first: 8, sortKey: CREATED_AT, reverse: true) {
+          edges {
+            node {
+              ...ProductCard
+            }
+          }
+        }
+
+        featured: products(first: 15, query: "tag:featured", sortKey: CREATED_AT, reverse: true) {
           edges {
             node {
               ...ProductCard
@@ -173,13 +185,13 @@ export async function getFeaturedContent() {
         }
       }
     `,
-    cache: 'force-cache',
-    tags: ['collections', 'products']
+    next: { revalidate: 300, tags: ['collections', 'products', 'featured'] }
   });
 
   return {
-    collections: data.collections.edges.map((edge) => edge.node),
-    products: data.products.edges.map((edge) => edge.node)
+    collections: data.collections.edges.map(e => e.node),
+    products: data.products.edges.map(e => e.node),
+    featured: data.featured?.edges.map(e => e.node)
   };
 }
 
@@ -202,11 +214,32 @@ export async function getCollections(limit = 12) {
       }
     `,
     variables: { limit },
-    cache: 'force-cache',
-    tags: ['collections']
+    next: { revalidate: 300, tags: ['collections'] }
   });
 
   return data.collections.edges.map(({ node }) => node);
+}
+
+export async function getCollectionsNames(limit = 12) {
+  const data = await shopifyFetch<{
+    collections: { edges: Array<{ node: { title: string } }> };
+  }>({
+    query: `
+      query Collections($limit: Int!) {
+        collections(first: $limit, sortKey: TITLE) {
+          edges {
+            node {
+              title
+            }
+          }
+        }
+      }
+    `,
+    variables: { limit },
+    next: { revalidate: 300, tags: ['collections'] }
+  });
+
+  return data.collections.edges.map(({ node }) => node.title);
 }
 
 export async function getCollectionByHandle(handle: string, cursor?: string) {
@@ -280,7 +313,7 @@ export async function getProductByHandle(handle: string) {
             title
             description
           }
-          media(first: 6) {
+          media(first: 20) {
             edges {
               node {
                 ... on MediaImage {
@@ -346,6 +379,10 @@ export async function predictiveSearch(query: string) {
 }
 
 export async function searchProducts(query: string, cursor?: string) {
+  const searchQuery = `
+    title:*${query}* OR description:*${query}*
+  `;
+
   const data = await shopifyFetch<{
     search: {
       edges: Array<{ cursor: string; node: ProductCard }>;
@@ -355,7 +392,12 @@ export async function searchProducts(query: string, cursor?: string) {
     query: `
       ${PRODUCT_CARD}
       query ProductSearch($query: String!, $cursor: String) {
-        search(query: $query, first: 12, after: $cursor, types: PRODUCT) {
+        search(
+          query: $query,
+          first: 12,
+          after: $cursor,
+          types: PRODUCT
+        ) {
           edges {
             cursor
             node {
@@ -371,7 +413,10 @@ export async function searchProducts(query: string, cursor?: string) {
         }
       }
     `,
-    variables: { query, cursor },
+    variables: {
+      query: searchQuery,
+      cursor,
+    },
     cache: 'no-store'
   });
 
@@ -380,6 +425,7 @@ export async function searchProducts(query: string, cursor?: string) {
     pageInfo: data.search.pageInfo
   };
 }
+
 
 export async function cartCreate() {
   const data = await shopifyFetch<{ cartCreate: { cart: Cart } }>({
@@ -429,8 +475,7 @@ export async function cartLinesAdd(cartId: string, lines: Array<{ merchandiseId:
       }
     `,
     variables: { cartId, lines },
-    cache: 'no-store',
-    tags: ['cart']
+    cache: 'no-store'
   });
 
   return data.cartLinesAdd.cart;
@@ -449,8 +494,7 @@ export async function cartLinesUpdate(cartId: string, lines: Array<{ id: string;
       }
     `,
     variables: { cartId, lines },
-    cache: 'no-store',
-    tags: ['cart']
+    cache: 'no-store'
   });
 
   return data.cartLinesUpdate.cart;
@@ -469,8 +513,7 @@ export async function cartLinesRemove(cartId: string, lineIds: string[]) {
       }
     `,
     variables: { cartId, lineIds },
-    cache: 'no-store',
-    tags: ['cart']
+    cache: 'no-store'
   });
 
   return data.cartLinesRemove.cart;
