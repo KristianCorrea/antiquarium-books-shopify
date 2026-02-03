@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: 'Atelier Scriptorium',
+  name: '',
   description:
     'A curated mix of rare editions, fine press ephemera, and museum-grade antiques for collectors.',
   navigation: [
