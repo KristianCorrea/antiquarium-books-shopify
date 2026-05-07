@@ -14,7 +14,7 @@ export const ProductCard = ({ product }: { product: ProductCardType }) => {
       className="group flex flex-col gap-3 rounded-3xl border border-black/5 bg-white/80 p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
     >
       {product.featuredImage ? (
-        <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-parchment">
+        <div className="relative aspect-[5/4] overflow-hidden rounded-2xl bg-parchment">
           <Image
             src={product.featuredImage.url}
             alt={product.featuredImage.altText ?? product.title}

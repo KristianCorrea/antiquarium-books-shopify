@@ -16,7 +16,7 @@ export default async function HomePage() {
             Museum-grade rarities, elegantly merchandised for modern collectors.
           </h1>
           <p className="text-lg text-black/70">
-            Every folio, map, and objet d'art is authenticated, restored by conservators, and documented with
+            Every folio, map, and objet d&apos;art is authenticated, restored by conservators, and documented with
             provenance notes ready for appraisal.
           </p>
           <div className="flex flex-wrap gap-4">
@@ -71,7 +71,7 @@ export default async function HomePage() {
             Search catalog
           </Link>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
