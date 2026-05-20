@@ -10,7 +10,7 @@ export default function AboutPage() {
         </p>
 
         <h1 className="mb-8 font-display text-5xl text-ink sm:text-6xl">
-          Antiquarium & Co.
+          Antiquarian Book Company
         </h1>
 
         <p className="mx-auto max-w-3xl text-lg leading-relaxed text-black/70">
@@ -31,27 +31,18 @@ export default function AboutPage() {
 
         <div className="space-y-6">
           <p className="leading-relaxed text-black/70">
-            Antiquarium offers a carefully curated selection of unique and
-            collectible items spanning multiple eras and interests. Our
-            inventory includes antiquarian and rare books, fine art, vintage
-            and antique prints, antiquarian music, historical autographs, as
-            well as anime, gaming, and other modern collectibles.
-          </p>
-
-          <p className="leading-relaxed text-black/70">
-            Each item is thoughtfully sourced, accurately described, and
-            presented with careful attention to condition and authenticity. We
-            invite you to explore our additional listings through our AbeBooks
+          Purveyor of antique and vintage rare books, music and paraphernalia. Each item is thoughtfully sourced, accurately described, and
+            presented with careful attention to condition and authenticity. All items shown here and more are available on our AbeBooks
             storefront and our Lunacane Collectibles eBay store.
           </p>
 
           <p className="leading-relaxed text-black/70">
             For questions or inquiries, feel free to contact us at{" "}
             <a
-              href="mailto:info@antiquarianbookco.com"
+              href="mailto:antiquarianbookco@gmail.com"
               className="font-medium underline underline-offset-4 transition hover:text-ink"
             >
-              info@antiquarianbookco.com
+              antiquarianbookco@gmail.com
             </a>
             .
           </p>

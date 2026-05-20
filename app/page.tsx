@@ -13,11 +13,11 @@ export default async function HomePage() {
         <div className="space-y-6">
           <p className="text-xs uppercase tracking-[0.5em] text-black/50">Curated for bibliophiles</p>
           <h1 className="font-display text-5xl leading-tight text-ink">
-            Museum-grade rarities, elegantly merchandised for modern collectors.
+            Purveyor of antique and vintage rare books, music and paraphernalia.
+
           </h1>
           <p className="text-lg text-black/70">
-            Every folio, map, and objet d&apos;art is authenticated, restored by conservators, and documented with
-            provenance notes ready for appraisal.
+          All items on our store are also available on our ebay and Abebooks webstores. Feel free to reach out if you have any questions.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link
